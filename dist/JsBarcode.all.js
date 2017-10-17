@@ -192,6 +192,7 @@ var START_B = exports.START_B = 104;
 var START_C = exports.START_C = 105;
 var MODULO = exports.MODULO = 103;
 var STOP = exports.STOP = 106;
+var FNC1 = exports.FNC1 = 207;
 
 // Get set by start code
 var SET_BY_CODE = exports.SET_BY_CODE = (_SET_BY_CODE = {}, _defineProperty(_SET_BY_CODE, START_A, SET_A), _defineProperty(_SET_BY_CODE, START_B, SET_B), _defineProperty(_SET_BY_CODE, START_C, SET_C), _SET_BY_CODE);
@@ -388,6 +389,10 @@ var CODE128 = function (_Barcode) {
 				throw new RangeError('The encoding does not start with a start character.');
 			}
 
+			if (this.shouldEncodeAsEan128() === true) {
+				bytes.unshift(_constants.FNC1);
+			}
+
 			// Start encode with the right type
 			var encodingResult = CODE128.next(bytes, 1, startSet);
 
@@ -403,6 +408,18 @@ var CODE128 = function (_Barcode) {
 				// Add the end bits
 				CODE128.getBar(_constants.STOP)
 			};
+		}
+
+		// GS1-128/EAN-128
+
+	}, {
+		key: 'shouldEncodeAsEan128',
+		value: function shouldEncodeAsEan128() {
+			var isEAN128 = this.options.ean128 || false;
+			if (typeof isEAN128 === 'string') {
+				isEAN128 = isEAN128.toLowerCase() === 'true';
+			}
+			return isEAN128;
 		}
 
 		// Get a bar symbol by index
@@ -3408,7 +3425,20 @@ var CanvasRenderer = function () {
 						ctx.textAlign = 'center';
 					}
 
-				ctx.fillText(encoding.text, x, y);
+				if (encoding.options.boldValueFrom) {
+					var addSpace = 1;
+					var boldStart = encoding.text.length - encoding.options.boldValueFrom;
+
+					var t = encoding.text.substr(0, boldStart) + " ".repeat(encoding.options.boldValueFrom + addSpace);
+					ctx.fillText(t, x, y);
+
+					t = " ".repeat(boldStart + addSpace) + encoding.text.substr(boldStart);
+					font = options.fontOptions + " bold " + options.fontSize + "px " + options.font;
+					ctx.font = font;
+					ctx.fillText(t, x, y);
+				} else {
+					ctx.fillText(encoding.text, x, y);
+				}
 			}
 		}
 	}, {

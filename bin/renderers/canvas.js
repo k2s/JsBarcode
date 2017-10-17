@@ -132,7 +132,20 @@ var CanvasRenderer = function () {
 						ctx.textAlign = 'center';
 					}
 
-				ctx.fillText(encoding.text, x, y);
+				if (encoding.options.boldValueFrom) {
+					var addSpace = 1;
+					var boldStart = encoding.text.length - encoding.options.boldValueFrom;
+
+					var t = encoding.text.substr(0, boldStart) + " ".repeat(encoding.options.boldValueFrom + addSpace);
+					ctx.fillText(t, x, y);
+
+					t = " ".repeat(boldStart + addSpace) + encoding.text.substr(boldStart);
+					font = options.fontOptions + " bold " + options.fontSize + "px " + options.font;
+					ctx.font = font;
+					ctx.fillText(t, x, y);
+				} else {
+					ctx.fillText(encoding.text, x, y);
+				}
 			}
 		}
 	}, {
