@@ -114,7 +114,10 @@ class CanvasRenderer{
 				ctx.textAlign = 'center';
 			}
 
+			// we need to make sure that it is number
+			encoding.options.boldValueFrom = encoding.options.boldValueFrom * 1;
 			if (encoding.options.boldValueFrom) {
+				// TODO could be another parameter
 				var addSpace = 1
 				var boldStart = encoding.text.length - encoding.options.boldValueFrom;
 
