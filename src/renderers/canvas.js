@@ -118,9 +118,10 @@ class CanvasRenderer{
 			encoding.options.boldValueFrom = encoding.options.boldValueFrom * 1;
 			if (encoding.options.boldValueFrom) {
 				// TODO could be another parameter
-				var addSpace = 1
+				var addSpace = 1;
 				var boldStart = encoding.text.length - encoding.options.boldValueFrom;
 
+                                // TODO do we need to add spaces to booth text parts ?
 				var t = encoding.text.substr(0, boldStart) + " ".repeat(encoding.options.boldValueFrom + addSpace);
 				ctx.fillText(t, x, y);
 

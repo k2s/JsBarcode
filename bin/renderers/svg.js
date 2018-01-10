@@ -132,7 +132,24 @@ var SVGRenderer = function () {
 				textElem.setAttribute("x", x);
 				textElem.setAttribute("y", y);
 
-				textElem.appendChild(this.document.createTextNode(encoding.text));
+				// we need to make sure that it is number
+				encoding.options.boldValueFrom = encoding.options.boldValueFrom * 1;
+				if (encoding.options.boldValueFrom) {
+					// TODO could be another parameter
+					var addSpace = 1;
+					var boldStart = encoding.text.length - encoding.options.boldValueFrom;
+
+					var t = encoding.text.substr(0, boldStart) + " ".repeat(addSpace);
+					textElem.appendChild(this.document.createTextNode(t));
+
+					t = encoding.text.substr(boldStart);
+					var tspanElem = this.document.createElementNS(svgns, 'tspan');
+					tspanElem.setAttribute("font-weight", "bold");
+					tspanElem.appendChild(this.document.createTextNode(t));
+					textElem.appendChild(tspanElem);
+				} else {
+					textElem.appendChild(this.document.createTextNode(encoding.text));
+				}
 
 				parent.appendChild(textElem);
 			}
